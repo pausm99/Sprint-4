@@ -30,5 +30,5 @@ async function randomJoke() {
   
 
 function printJoke() {
-  if (a!= null) a.innerHTML = joke.joke;
+  if (a!= null) a.innerText = joke.joke;
 }
