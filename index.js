@@ -8,12 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const a = document.getElementById('jokeDiv');
+const a = document.getElementById('joke');
+var reportJokes = [];
 var joke = {
     id: '',
     joke: ''
 };
-randomJoke();
+nextJoke();
+function nextJoke() {
+    if (joke.score !== undefined) {
+        reportJokes.push(joke);
+        if (reportJokes.length !== 0)
+            console.log(reportJokes);
+    }
+    randomJoke();
+}
+;
 function randomJoke() {
     return __awaiter(this, void 0, void 0, function* () {
         fetch('https://icanhazdadjoke.com/', {
@@ -21,15 +31,26 @@ function randomJoke() {
                 "Accept": "application/json"
             }
         }).then(response => response.json())
-            .then(data => {
-            joke.id = data.id;
-            joke.joke = data.joke;
-            console.log(data);
-        })
+            .then(data => fillData(data))
             .then(printJoke);
     });
 }
+var rateButtons = document.querySelectorAll('.rate-button');
+rateButtons.forEach(button => {
+    button.addEventListener('click', function () {
+        let idCode = button.id.split('rate-button-')[1];
+        joke.score = Number(idCode);
+        joke.date = new Date().toISOString();
+    });
+});
+function fillData(data) {
+    joke = {
+        id: data.id,
+        joke: data.joke,
+    };
+    console.log(joke);
+}
 function printJoke() {
     if (a != null)
-        a.innerHTML = joke.joke;
+        a.innerText = joke.joke;
 }

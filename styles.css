@@ -39,7 +39,28 @@ body {
     padding: 1rem;
 }
 
-button {
+.rate {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.rate-button {
+    font-size: 2rem;
+    border-radius: 5px;
+    background-color: transparent;
+    padding: 1.5rem;
+    cursor: pointer;
+    border: 0;
+}
+
+.rate-button:focus {
+    outline: 3px solid #B0A2E7;
+}
+
+#nextJokeButton {
     cursor: pointer;
     border: 0;
     background-color: #B0A2E7;
@@ -50,7 +71,7 @@ button {
     color: white
 }
 
-button:hover {
+#nextJokeButton:hover {
     background-color: antiquewhite;
     color: #B0A2E7;
     outline: 3px solid #B0A2E7;
