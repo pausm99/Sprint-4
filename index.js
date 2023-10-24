@@ -8,13 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const a = document.getElementById('joke');
+const jokeElement = document.getElementById('joke');
 var reportJokes = [];
 var joke = {
     id: '',
     joke: ''
 };
+const weatherElement = document.getElementById('weather');
+var currentWeather;
 nextJoke();
+getCurrentWeather();
 function nextJoke() {
     if (joke.score !== undefined) {
         reportJokes.push(joke);
@@ -31,8 +34,15 @@ function randomJoke() {
                 "Accept": "application/json"
             }
         }).then(response => response.json())
-            .then(data => fillData(data))
+            .then(data => fillJokeData(data))
             .then(printJoke);
+    });
+}
+function getCurrentWeather() {
+    return __awaiter(this, void 0, void 0, function* () {
+        fetch('https://api.openweathermap.org/data/2.5/weather?lat=41.390205&lon=2.154007&appid=d6b868d62cbb3509a8c9e9ed6f568fa0')
+            .then(response => response.json())
+            .then(data => fillWeatherData(data));
     });
 }
 var rateButtons = document.querySelectorAll('.rate-button');
@@ -43,14 +53,26 @@ rateButtons.forEach(button => {
         joke.date = new Date().toISOString();
     });
 });
-function fillData(data) {
+function fillWeatherData(data) {
+    currentWeather = {
+        description: data.weather[0].description,
+    };
+    printWeather();
+}
+function fillJokeData(data) {
     joke = {
         id: data.id,
         joke: data.joke,
     };
     console.log(joke);
 }
+function printWeather() {
+    if (weatherElement != null) {
+        weatherElement.innerText = 'Today: ' + currentWeather.description;
+        weatherElement.style.textTransform = "capitalize";
+    }
+}
 function printJoke() {
-    if (a != null)
-        a.innerText = joke.joke;
+    if (jokeElement != null)
+        jokeElement.innerText = joke.joke;
 }

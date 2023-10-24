@@ -77,3 +77,11 @@ body {
     outline: 3px solid #B0A2E7;
 }
 
+#weather {
+    position: absolute;
+    top: 3rem;
+    left: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

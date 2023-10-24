@@ -4,7 +4,7 @@ type Joke = {
   score?: number,
   date?: string
 }
-const a = document.getElementById('joke');
+const jokeElement = document.getElementById('joke');
 
 var reportJokes: Joke[] = [];
 
@@ -13,7 +13,16 @@ var joke:Joke = {
   joke: ''
 }
 
+type Weather = {
+  description: string,
+}
+
+const weatherElement = document.getElementById('weather');
+
+var currentWeather: Weather;
+
 nextJoke();
+getCurrentWeather();
 
 function nextJoke() {
   if (joke.score !== undefined) {
@@ -29,8 +38,14 @@ async function randomJoke() {
       "Accept": "application/json"
     }
   }).then(response => response.json())
-    .then(data => fillData(data))
+    .then(data => fillJokeData(data))
     .then(printJoke);
+}
+
+async function getCurrentWeather() {
+  fetch('https://api.openweathermap.org/data/2.5/weather?lat=41.390205&lon=2.154007&appid=d6b868d62cbb3509a8c9e9ed6f568fa0')
+    .then(response => response.json())
+    .then(data => fillWeatherData(data))
 }
 
 var rateButtons = document.querySelectorAll('.rate-button');
@@ -41,8 +56,15 @@ rateButtons.forEach(button => {
       joke.date = new Date().toISOString();
     });
 });
+
+function fillWeatherData(data: any) {
+  currentWeather = {
+    description: data.weather[0].description,
+  }
+  printWeather();
+}
   
-function fillData(data: any) {
+function fillJokeData(data: any) {
   joke = {
     id: data.id,
     joke: data.joke,
@@ -50,6 +72,14 @@ function fillData(data: any) {
   console.log(joke);
 }
 
+function printWeather() {
+  if (weatherElement != null) {
+    weatherElement.innerText = 'Today: ' + currentWeather.description;
+    weatherElement.style.textTransform = "capitalize";
+  }
+  
+}
+
 function printJoke() {
-  if (a!= null) a.innerText = joke.joke;
+  if (jokeElement != null) jokeElement.innerText = joke.joke;
 }
