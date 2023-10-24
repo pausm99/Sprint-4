@@ -25,11 +25,13 @@ nextJoke();
 getCurrentWeather();
 
 function nextJoke() {
+
   if (joke.score !== undefined) {
-    reportJokes.push(joke);
+    const jokeExists = reportJokes.some(el => el.id === joke.id);
+    if (!jokeExists) reportJokes.push(joke);
     if (reportJokes.length !== 0) console.log(reportJokes);
   }  
-  randomJoke();
+  Math.random() < 0.5 ? randomJoke() : randomChuckNorrisJoke();
 };
 
 async function randomJoke() {
@@ -39,6 +41,13 @@ async function randomJoke() {
     }
   }).then(response => response.json())
     .then(data => fillJokeData(data))
+    .then(printJoke);
+}
+
+async function randomChuckNorrisJoke() {
+  fetch('https://api.chucknorris.io/jokes/random')
+    .then(response => response.json())
+    .then(data => fillChuckNorrisJokeData(data))
     .then(printJoke);
 }
 
@@ -68,6 +77,14 @@ function fillJokeData(data: any) {
   joke = {
     id: data.id,
     joke: data.joke,
+  }
+  console.log(joke);
+}
+
+function fillChuckNorrisJokeData(data: any) {
+  joke = {
+    id: data.id,
+    joke: data.value,
   }
   console.log(joke);
 }
