@@ -19,6 +19,8 @@ var currentWeather;
 nextJoke();
 getCurrentWeather();
 function nextJoke() {
+    if (joke.joke !== '')
+        printBackground();
     if (joke.score !== undefined) {
         const jokeExists = reportJokes.some(el => el.id === joke.id);
         if (!jokeExists)
@@ -55,6 +57,15 @@ function getCurrentWeather() {
             .then(data => fillWeatherData(data));
     });
 }
+function getWeatherIcon(iconCode) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (iconCode != undefined) {
+            fetch('https://openweathermap.org/img/wn/' + iconCode + '@2x.png')
+                .then((response) => response.blob())
+                .then((blob) => printWeather(blob));
+        }
+    });
+}
 var rateButtons = document.querySelectorAll('.rate-button');
 rateButtons.forEach(button => {
     button.addEventListener('click', function () {
@@ -64,10 +75,16 @@ rateButtons.forEach(button => {
     });
 });
 function fillWeatherData(data) {
+    let tempCelcius = farenheitToCelcius(data.main.temp);
     currentWeather = {
+        temperature: tempCelcius,
         description: data.weather[0].description,
+        iconCode: data.weather[0].icon
     };
-    printWeather();
+    getWeatherIcon(currentWeather.iconCode);
+}
+function farenheitToCelcius(f) {
+    return ((Number(f) - 273.15)).toFixed(1) + ' ºC'.toString();
 }
 function fillJokeData(data) {
     joke = {
@@ -83,13 +100,28 @@ function fillChuckNorrisJokeData(data) {
     };
     console.log(joke);
 }
-function printWeather() {
-    if (weatherElement != null) {
-        weatherElement.innerText = 'Today: ' + currentWeather.description;
-        weatherElement.style.textTransform = "capitalize";
-    }
+function printWeather(element) {
+    const imageUrl = URL.createObjectURL(element);
+    const imageElement = document.createElement("img");
+    const tempElement = document.createElement("div");
+    imageElement.classList.add("iconDiv");
+    tempElement.innerText = currentWeather.temperature;
+    imageElement.src = imageUrl;
+    weatherElement === null || weatherElement === void 0 ? void 0 : weatherElement.appendChild(imageElement);
+    weatherElement === null || weatherElement === void 0 ? void 0 : weatherElement.appendChild(tempElement);
 }
 function printJoke() {
     if (jokeElement != null)
         jokeElement.innerText = joke.joke;
+}
+function printBackground() {
+    let oldClass = document.body.classList[0];
+    const number = Math.floor(Math.random() * 5) + 1;
+    let newClass = 'coolBackground' + number;
+    if (oldClass === newClass)
+        printBackground();
+    else {
+        document.body.classList.remove(oldClass);
+        document.body.classList.add(newClass);
+    }
 }
